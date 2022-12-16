@@ -21,6 +21,9 @@ var stats = document.querySelector('#stats-section');
 var gameOverBox = document.querySelector('#game-over-section');
 var gameOverGuessCount = document.querySelector('#game-over-guesses-count');
 var gameOverGuessGrammar = document.querySelector('#game-over-guesses-plural');
+var statsTotalGames = document.querySelector('#stats-total-games');
+var statsCorrectPercent = document.querySelector('#stats-percent-correct');
+var statsAverageGuesses = document.querySelector('#stats-average-guesses');
 
 // Event Listeners
 window.addEventListener('load', function(){
@@ -173,6 +176,7 @@ function changeRow() {
 
 function declareWinner() {
   recordGameStats();
+  doGameMath()
   changeGameOverText();
   viewGameOverMessage();
   setTimeout(startNewGame, 4000);
@@ -180,6 +184,7 @@ function declareWinner() {
 
 function declareLoser() {
   recordGameStats();
+  doGameMath()
   loserMessage.classList.remove('collapsed');
   letterKey.classList.add('hidden');
   gameBoard.classList.add('collapsed');
@@ -195,8 +200,17 @@ function recordGameStats() {
  }
 
  function doGameMath() {
-  
- }
+  let totalGames = gamesPlayed.length
+  let gamesWon = gamesPlayed.filter(game => !!game.solved).length
+  let totalGuesses = gamesPlayed.reduce((total, game) => {
+    return total + game.guesses
+  }, 0)
+  let percent = (gamesWon/totalGames) * 100
+  let numGuesses = totalGuesses / gamesWon
+  statsTotalGames.innerText = totalGames
+  statsCorrectPercent.innerText = percent
+  statsAverageGuesses.innerText = numGuesses
+}
 
 function changeGameOverText() {
   gameOverGuessCount.innerText = currentRow;
